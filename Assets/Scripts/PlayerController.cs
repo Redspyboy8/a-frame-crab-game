@@ -6,14 +6,17 @@ using UnityEngine.Serialization;
 public class PlayerController : MonoBehaviour
 {
     [Range(0, 0.9f)] [SerializeField] private float _movementSpeed = .10f;
-    [SerializeField] private float _JumpForce = 100f;
+    [SerializeField] private float _JumpForce = 1000f;
     
     [FormerlySerializedAs("this_rb")] public Rigidbody2D rb;
     public Collider2D[] groundColliders;
     public Collider2D[] waterColliders;
 
-    [SerializeField] public LayerMask groundLayer;
-    [SerializeField] public LayerMask waterLayer;
+    [SerializeField] public LayerMask groundLayers;
+    [SerializeField] public LayerMask waterLayers;
+
+    [SerializeField] private Transform groundCheckTransform;
+    [SerializeField] private Transform ceilCheckTransform; 
     
     public bool isGrounded;
     public bool isGroundedOnWater;
@@ -47,7 +50,32 @@ public class PlayerController : MonoBehaviour
         isGrounded = false;
         isGroundedOnWater = false;
         
-        // groundColliders = Physics2D.OverlapBoxAll()
+        groundColliders = Physics2D.OverlapBoxAll(groundCheckTransform.position, new Vector2(BOUNDINGBOX_X, BOUNDINGBOX_Y), 0, groundLayers);
+
+        for (int i = 0; i < groundColliders.Length; i++)
+        {
+            if (groundColliders[i].gameObject != gameObject)
+            {
+                isGrounded = true;
+                if (!wasGrounded)
+                {
+                    
+                }
+            }
+        }
+        
+        waterColliders = Physics2D.OverlapBoxAll(groundCheckTransform.position, new Vector2(BOUNDINGBOX_X, BOUNDINGBOX_Y), 0, waterLayers);
+        for (int i = 0; i < waterColliders.Length; i++)
+        {
+            if (waterColliders[i].gameObject != gameObject)
+            {
+                isGroundedOnWater = true;
+                if (!wasGrounded)
+                {
+                    
+                }
+            }
+        }
 
     }
 
@@ -68,8 +96,11 @@ public class PlayerController : MonoBehaviour
 
             if (jump)
             {
+                print("Move_Jump call!");
                 isGrounded = false;
-                rb.AddForce(transform.localScale.y * _JumpForce * transform.up);
+                Vector3 finalJumpForce = transform.up * _JumpForce * transform.localScale.y;
+                print(finalJumpForce);
+                rb.AddForce(finalJumpForce);
             }
         }
     }
