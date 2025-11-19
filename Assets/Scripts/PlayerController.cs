@@ -96,10 +96,8 @@ public class PlayerController : MonoBehaviour
 
             if (jump)
             {
-                print("Move_Jump call!");
                 isGrounded = false;
                 Vector3 finalJumpForce = transform.up * _JumpForce * transform.localScale.y;
-                print(finalJumpForce);
                 rb.AddForce(finalJumpForce);
             }
         }

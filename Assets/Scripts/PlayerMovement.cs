@@ -46,7 +46,6 @@ public class PlayerMovement : MonoBehaviour
         {
             if (controller.isGrounded)
             {
-                print("Jumping!");
                 controller.rb.velocity = new Vector2(controller.rb.velocity.x, 0f);
                 jump = true;
                 jumpTime = 6;
